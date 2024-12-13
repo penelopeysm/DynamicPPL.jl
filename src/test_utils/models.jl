@@ -437,7 +437,8 @@ end
 
 @model function demo_assume_submodel_observe_index_literal()
     # Submodel prior
-    @submodel s, m = _prior_dot_assume()
+    priors ~ to_submodel(_prior_dot_assume())
+    s, m = priors
     1.5 ~ Normal(m[1], sqrt(s[1]))
     2.0 ~ Normal(m[2], sqrt(s[2]))
 
@@ -475,7 +476,7 @@ end
     m .~ Normal.(0, sqrt.(s))
 
     # Submodel likelihood
-    @submodel _likelihood_mltivariate_observe(s, m, x)
+    _ignore ~ to_submodel(_likelihood_mltivariate_observe(s, m, x))
 
     return (; s=s, m=m, x=x, logp=getlogp(__varinfo__))
 end
