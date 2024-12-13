@@ -1,44 +1,29 @@
-using Accessors
-using ADTypes
-using DynamicPPL
 using AbstractMCMC
 using AbstractPPL
-using Bijectors
-using DifferentiationInterface
 using Distributions
-using DistributionsAD
-using Documenter
-using ForwardDiff
-using LogDensityProblems, LogDensityProblemsAD
-using MacroTools
-using MCMCChains
-using Mooncake: Mooncake
-using StableRNGs
-using Tracker
-using ReverseDiff
-using Zygote
-using Compat
-
-using Distributed
-using LinearAlgebra
-using Pkg
+using DynamicPPL
 using Random
-using Serialization
 using Test
-using Distributions
-using LinearAlgebra # Diagonal
-
-using JET: JET
-
-using Combinatorics: combinations
-using OrderedCollections: OrderedSet
-
-using DynamicPPL: getargs_dottilde, getargs_tilde, Selector
 
 Random.seed!(100)
 
-include("test_util.jl")
+@testset verbose = true "DynamicPPL.jl" begin
+    @testset "$(model.f)" for model in DynamicPPL.TestUtils.DEMO_MODELS
+        N = 1000
+        chain_init = sample(model, SampleFromUniform(), N; progress=false)
 
-@testset "DynamicPPL.jl" begin
-    include("sampler.jl")
+        for vn in keys(first(chain_init))
+            if AbstractPPL.subsumes(@varname(s), vn)
+                # `s ~ InverseGamma(2, 3)` and its unconstrained value will be sampled from Unif[-2,2].
+                dist = InverseGamma(2, 3)
+                b = DynamicPPL.link_transform(dist)
+                @test mean(mean(b(vi[vn])) for vi in chain_init) ≈ 0 atol = 0.11
+            elseif AbstractPPL.subsumes(@varname(m), vn)
+                # `m ~ Normal(0, sqrt(s))` and its constrained value is the same.
+                @test mean(mean(vi[vn]) for vi in chain_init) ≈ 0 atol = 0.11
+            else
+                error("Unknown variable name: $vn")
+            end
+        end
+    end
 end
