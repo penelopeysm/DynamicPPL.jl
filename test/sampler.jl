@@ -1,4 +1,4 @@
-@testset "$(model.f)" for model in DynamicPPL.TestUtils.DEMO_MODELS
+@testset verbose = true "$(model.f)" for model in DynamicPPL.TestUtils.DEMO_MODELS
     N = 1000
     chain_init = sample(model, SampleFromUniform(), N; progress=false)
 
