@@ -72,9 +72,9 @@ end
 end
 
 TEST_MODELS = [
-    demo_assume_observe_literal,
-    demo_assume_submodel_observe_index_literal_old,
-    demo_assume_submodel_observe_index_literal_new,
-    demo_dot_assume_observe_submodel_old,
-    demo_dot_assume_observe_submodel_new,
+    demo_assume_observe_literal(),
+    demo_assume_submodel_observe_index_literal_old(),
+    demo_assume_submodel_observe_index_literal_new(),
+    demo_dot_assume_observe_submodel_old(),
+    demo_dot_assume_observe_submodel_new(),
 ]
