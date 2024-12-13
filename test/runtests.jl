@@ -8,11 +8,17 @@ using Turing
 
 Random.seed!(100)
 
-# no-op
+include("models.jl")
+
+samplers = {
+    "SampleFromUniform" => SampleFromUniform(),
+    "NUTS" => NUTS()
+}
 
 @testset verbose = true "DynamicPPL.jl" begin
-    @testset "$(model.f)" for model in DynamicPPL.TestUtils.DEMO_MODELS
-        N = 1000
-        chain_init = sample(model, NUTS(), N; progress=false)
+    @testset verbose = true "$(model.f)" for model in MODELS
+        @testset "$(k)" for (k, v) in samplers
+            chain_init = sample(model, v, 100; progress=false)
+        end
     end
 end
