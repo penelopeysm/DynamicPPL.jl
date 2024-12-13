@@ -4,6 +4,7 @@ using Distributions
 using DynamicPPL
 using Random
 using Test
+using Turing
 
 Random.seed!(100)
 
@@ -12,6 +13,6 @@ Random.seed!(100)
 @testset verbose = true "DynamicPPL.jl" begin
     @testset "$(model.f)" for model in DynamicPPL.TestUtils.DEMO_MODELS
         N = 1000
-        chain_init = sample(model, SampleFromUniform(), N; progress=false)
+        chain_init = sample(model, NUTS(), N; progress=false)
     end
 end
