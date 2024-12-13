@@ -16,6 +16,9 @@ See also: [`link!!`](@ref), [`invlink!!`](@ref), [`maybe_invlink_before_eval!!`]
 """
 abstract type AbstractTransformation end
 
+function link! end
+function invlink! end
+
 """
     $(TYPEDEF)
 
